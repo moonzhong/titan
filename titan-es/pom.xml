@@ -148,7 +148,7 @@
                 <executions>
                     <execution>
                         <id>copy-es-bin</id>
-                        <phase>process-test-resources</phase>
+                        <phase>complie</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
@@ -170,7 +170,7 @@
                 <executions>
                     <execution>
                         <id>build-es-classpath</id>
-                        <phase>process-test-resources</phase>
+                        <phase>complie</phase>
                         <goals>
                             <goal>build-classpath</goal>
                         </goals>

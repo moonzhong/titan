@@ -108,20 +108,20 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>generate-cached-classpath</id>
-                    </execution>
-                    <execution>
-                        <id>unpack-common-test-classes</id>
-                    </execution>
+<!--                     <execution> -->
+<!--                         <id>generate-cached-classpath</id> -->
+<!--                     </execution> -->
+<!--                     <execution> -->
+<!--                         <id>unpack-common-test-classes</id> -->
+<!--                     </execution> -->
                 </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>copy-hbase-bin</id>
-                    </execution>
+<!--                     <execution> -->
+<!--                         <id>copy-hbase-bin</id> -->
+<!--                     </execution> -->
                 </executions>
             </plugin>
             <plugin>

@@ -351,7 +351,7 @@
                       so we might as well include it in our test configuration. -->
                     <execution>
                         <id>copy</id>
-                        <phase>process-resources</phase>
+                        <phase>complie</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>

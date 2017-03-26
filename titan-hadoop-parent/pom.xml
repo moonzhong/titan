@@ -154,7 +154,7 @@
                     <executions>
                         <execution>
                             <id>unpack-shared-resources</id>
-                            <phase>generate-resources</phase>
+                            <phase>complie</phase>
                             <goals>
                                 <goal>unpack</goal>
                             </goals>
@@ -172,7 +172,7 @@
                         </execution>
                         <execution>
                             <id>unpack-common-test-classes</id>
-                            <phase>process-test-classes</phase>
+                            <phase>complie</phase>
                             <goals>
                                 <goal>unpack</goal>
                             </goals>
@@ -238,7 +238,7 @@
                     <executions>
                         <execution>
                             <id>build-job-jar</id>
-                            <phase>package</phase>
+                            <phase>complie</phase>
                             <goals>
                                 <goal>single</goal>
                             </goals>

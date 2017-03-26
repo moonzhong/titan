@@ -174,7 +174,7 @@ public abstract class OLAPTest extends TitanGraphBaseTest {
         assertNull(getV(tx,v3id));
         v1 = getV(tx, v1id);
         assertNotNull(v1);
-        assertEquals(v3id,v1.query().direction(Direction.IN).labels("knows").vertices().iterator().next().longId());
+        assertEquals(v3id,((TitanElement) v1.query().direction(Direction.IN).labels("knows").vertices().iterator().next()).longId());
         tx.commit();
         mgmt.commit();
 

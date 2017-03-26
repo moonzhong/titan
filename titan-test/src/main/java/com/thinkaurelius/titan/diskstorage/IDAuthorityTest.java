@@ -105,7 +105,7 @@ public abstract class IDAuthorityTest {
         //hasFixedUid = !config.get(IDAUTHORITY_RANDOMIZE_UNIQUEID);
         hasFixedUid = !ConflictAvoidanceMode.GLOBAL_AUTO.equals(config.get(IDAUTHORITY_CONFLICT_AVOIDANCE));
         hasEmptyUid = uidBitWidth==0;
-        blockSize = config.get(IDS_BLOCK_SIZE);
+        blockSize = (long) config.get(IDS_BLOCK_SIZE);
         idUpperBoundBitWidth = 30;
         idUpperBound = 1l<<idUpperBoundBitWidth;
     }

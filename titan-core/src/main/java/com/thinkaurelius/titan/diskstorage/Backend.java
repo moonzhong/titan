@@ -252,7 +252,7 @@ public class Backend implements LockerProvider, AutoCloseable {
                     cacheSizeBytes = (long)cachesize;
                 }
                 log.info("Configuring total store cache size: {}",cacheSizeBytes);
-                long cleanWaitTime = configuration.get(DB_CACHE_CLEAN_WAIT);
+                long cleanWaitTime = (long) configuration.get(DB_CACHE_CLEAN_WAIT);
                 Preconditions.checkArgument(EDGESTORE_CACHE_PERCENT + INDEXSTORE_CACHE_PERCENT == 1.0,"Cache percentages don't add up!");
                 long edgeStoreCacheSize = Math.round(cacheSizeBytes * EDGESTORE_CACHE_PERCENT);
                 long indexStoreCacheSize = Math.round(cacheSizeBytes * INDEXSTORE_CACHE_PERCENT);

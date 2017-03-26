@@ -70,7 +70,7 @@ public class VertexIDAssigner implements AutoCloseable {
         this.idAuthority = idAuthority;
 
 
-        int partitionBits = NumberUtil.getPowerOf2(config.get(CLUSTER_MAX_PARTITIONS));
+        int partitionBits = NumberUtil.getPowerOf2((long) config.get(CLUSTER_MAX_PARTITIONS));
         idManager = new IDManager(partitionBits);
         Preconditions.checkArgument(idManager.getPartitionBound() <= Integer.MAX_VALUE && idManager.getPartitionBound()>0);
         this.partitionIdBound = (int)idManager.getPartitionBound();
@@ -81,7 +81,7 @@ public class VertexIDAssigner implements AutoCloseable {
         placementStrategy.injectIDManager(idManager);
         log.debug("Partition IDs? [{}], Local Partitions? [{}]",true,hasLocalPartitions);
 
-        long baseBlockSize = config.get(IDS_BLOCK_SIZE);
+        long baseBlockSize = (long) config.get(IDS_BLOCK_SIZE);
         idAuthority.setIDBlockSizer(new SimpleVertexIDBlockSizer(baseBlockSize));
 
         renewTimeoutMS = config.get(IDS_RENEW_TIMEOUT);

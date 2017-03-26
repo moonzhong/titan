@@ -1492,7 +1492,7 @@ public class GraphDatabaseConfiguration {
         final String suffix;
 
         if (config.has(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID_SUFFIX)) {
-            suffix = LongEncoding.encode(config.get(
+            suffix = LongEncoding.encode((long) config.get(
                     GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID_SUFFIX));
         } else {
             suffix = ManagementFactory.getRuntimeMXBean().getName() + LongEncoding.encode(INSTANCE_COUNTER.incrementAndGet());

@@ -115,7 +115,7 @@
                     <executions>
                         <execution>
                             <id>generate-cached-classpath</id>
-                            <phase>generate-test-resources</phase>
+                            <phase>complie</phase>
                             <goals>
                                 <goal>build-classpath</goal>
                             </goals>
@@ -125,7 +125,7 @@
                         </execution>
                         <execution>
                             <id>unpack-common-test-classes</id>
-                            <phase>process-test-classes</phase>
+                            <phase>complie</phase>
                             <goals>
                                 <goal>unpack</goal>
                             </goals>
@@ -150,7 +150,7 @@
                     <executions>
                         <execution>
                             <id>copy-hbase-bin</id>
-                            <phase>process-test-resources</phase>
+                            <phase>complie</phase>
                             <goals>
                                 <goal>single</goal>
                             </goals>

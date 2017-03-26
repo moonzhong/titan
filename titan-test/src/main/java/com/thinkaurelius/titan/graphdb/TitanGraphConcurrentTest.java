@@ -374,9 +374,9 @@ public abstract class TitanGraphConcurrentTest extends TitanGraphBaseTest {
                 // Make or break relType between two (possibly same) random nodes
                 TitanVertex source = Iterables.<TitanVertex>getOnlyElement(tx.query().has(idKey, 0).vertices());
                 TitanVertex sink = Iterables.<TitanVertex>getOnlyElement(tx.query().has(idKey, 1).vertices());
-                for (Edge r : source.query().direction(Direction.OUT).labels(elabel).edges()) {
-                    if (getId(r.inVertex()) == getId(sink)) {
-                        r.remove();
+                for (Object r : source.query().direction(Direction.OUT).labels(elabel).edges()) {
+                    if (getId(((Edge) r).inVertex()) == getId(sink)) {
+                    	((Edge) r).remove();
                         continue;
                     }
                 }
@@ -411,8 +411,8 @@ public abstract class TitanGraphConcurrentTest extends TitanGraphBaseTest {
 
             for (int i = 0; i < nodeTraversalCount; i++) {
                 assertCount(expectedEdges, v.query().labels(label2Traverse).direction(Direction.BOTH).edges());
-                for (TitanEdge r : v.query().direction(Direction.OUT).labels(label2Traverse).edges()) {
-                    v = r.vertex(Direction.IN);
+                for (Object r : v.query().direction(Direction.OUT).labels(label2Traverse).edges()) {
+                    v = ((TitanEdge) r).vertex(Direction.IN);
                 }
             }
         }

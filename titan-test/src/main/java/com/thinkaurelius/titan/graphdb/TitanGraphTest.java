@@ -111,6 +111,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.util.Metrics;
 import org.apache.tinkerpop.gremlin.process.traversal.util.TraversalMetrics;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
@@ -264,8 +265,8 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
         assertCount(numE, tx.query().edges());
 
         //tx.V().range(0,deleteV).remove();
-        for (TitanVertex v : tx.query().limit(deleteV).vertices()) {
-            v.remove();
+        for (Object v : tx.query().limit(deleteV).vertices()) {
+        	((TitanVertex) v).remove();
         }
 
         for (int i = 0; i < 10; i++) { //Repeated vertex counts
@@ -353,7 +354,8 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
 
             assertCount(connectOff.length + knowsOff.length, n.query().direction(Direction.OUT).edges());
             assertCount(2, n.properties());
-            for (TitanEdge r : n.query().direction(Direction.OUT).labels("knows").edges()) {
+            for (Object item : n.query().direction(Direction.OUT).labels("knows").edges()) {
+            	TitanEdge r = (TitanEdge) item;
                 TitanVertex n2 = r.vertex(Direction.IN);
                 int idsum = ((Number) n.value("uid")).intValue() + ((Number) n2.value("uid")).intValue();
                 assertEquals(idsum, ((Number) r.value("uid")).intValue());
@@ -363,7 +365,8 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
             }
 
             Set edgeIds = new HashSet(10);
-            for (TitanEdge r : n.query().direction(Direction.OUT).edges()) {
+            for (Object item : n.query().direction(Direction.OUT).edges()) {
+            	TitanEdge r = (TitanEdge) item;
                 edgeIds.add(((TitanEdge) r).longId());
             }
             assertTrue(edgeIds + " vs " + nodeEdgeIds[i], edgeIds.equals(nodeEdgeIds[i]));
@@ -1789,7 +1792,7 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
         for (TitanVertex v : new TitanVertex[]{v1, v2, v3}) {
             assertCount(2, v.query().direction(Direction.BOTH).labels("knows").edges());
             assertCount(1, v.query().direction(Direction.OUT).labels("knows").edges());
-            assertEquals(5, getOnlyElement(v.query().direction(Direction.OUT).labels("knows").edges()).<Integer>value("time").intValue() % 10);
+            assertEquals(5, ((Element) getOnlyElement(v.query().direction(Direction.OUT).labels("knows").edges())).<Integer>value("time").intValue() % 10);
         }
 
         graph.tx().commit();
@@ -1808,7 +1811,7 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
         for (TitanVertex v : new TitanVertex[]{v1, v2, v3}) {
             assertCount(2, v.query().direction(Direction.BOTH).labels("knows").edges());
             assertCount(1, v.query().direction(Direction.OUT).labels("knows").edges());
-            assertEquals(5, getOnlyElement(v.query().direction(Direction.OUT).labels("knows").edges()).<Integer>value("time").intValue() % 10);
+            assertEquals(5, ((Element) getOnlyElement(v.query().direction(Direction.OUT).labels("knows").edges())).<Integer>value("time").intValue() % 10);
         }
 
         graph.tx().commit();
@@ -3133,7 +3136,8 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
         //--------------
 
         //Update in transaction
-        for (TitanVertexProperty<String> p : v.query().labels("name").properties()) {
+        for (Object item : v.query().labels("name").properties()) {
+        	TitanVertexProperty<String> p = (TitanVertexProperty<String>) item;
             if (p.<Long>value("time") < (numV / 2)) p.remove();
         }
         for (TitanEdge e : v.query().direction(BOTH).edges()) {
@@ -3308,7 +3312,7 @@ public abstract class TitanGraphTest extends TitanGraphBaseTest {
         assertCount(numEdges, parentVertex.query().direction(Direction.OUT).edges());
 
         // Remove an edge.
-        parentVertex.query().direction(OUT).edges().iterator().next().remove();
+        ((TitanElement) parentVertex.query().direction(OUT).edges().iterator().next()).remove();
 
         // Check that getEdges returns one fewer.
         assertCount(numEdges - 1, parentVertex.query().direction(Direction.OUT).edges());

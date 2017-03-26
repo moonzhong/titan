@@ -100,7 +100,7 @@ public class ConsistentKeyIDAuthority extends AbstractIDAuthority implements Bac
 
         supportsInterruption = manager.getFeatures().supportsInterruption();
 
-        partitionBitWdith = NumberUtil.getPowerOf2(config.get(CLUSTER_MAX_PARTITIONS));
+        partitionBitWdith = NumberUtil.getPowerOf2((long) config.get(CLUSTER_MAX_PARTITIONS));
         Preconditions.checkArgument(partitionBitWdith>=0 && partitionBitWdith<=16);
 
         uniqueIdBitWidth = config.get(IDAUTHORITY_CAV_BITS);

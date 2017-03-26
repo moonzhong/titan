@@ -321,22 +321,22 @@ public abstract class TitanEventualGraphTest extends TitanGraphBaseTest {
             assertEquals(2,pp.value());
         }
 
-        Edge e = getOnlyElement(v.query().direction(OUT).labels("es").edges());
+        Edge e = (Edge) getOnlyElement(v.query().direction(OUT).labels("es").edges());
         assertEquals(wintx,e.<Integer>value("sig").intValue());
         assertNotEquals(rs[6].longId(),getId(e));
 
-        e = getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
+        e = (Edge) getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
         assertEquals(wintx,e.<Integer>value("sig").intValue());
         assertEquals(rs[7].longId(), getId(e));
-        e = getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
+        e = (Edge) getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
         assertEquals(wintx,e.<Integer>value("sig").intValue());
         assertNotEquals(rs[8].longId(),getId(e));
-        e = getOnlyElement(v.query().direction(OUT).labels("em").edges());
+        e = (Edge) getOnlyElement(v.query().direction(OUT).labels("em").edges());
         assertEquals(wintx,e.<Integer>value("sig").intValue());
         assertEquals(rs[4].longId(), getId(e));
-        for (Edge ee : v.query().direction(OUT).labels("emf").edges()) {
-            assertNotEquals(rs[5].longId(),getId(ee));
-            assertEquals(uid,ee.inVertex().id());
+        for (Object ee : v.query().direction(OUT).labels("emf").edges()) {
+            assertNotEquals(rs[5].longId(),getId((Edge)ee));
+            assertEquals(uid,((Edge)ee).inVertex().id());
         }
     }
 
@@ -360,19 +360,19 @@ public abstract class TitanEventualGraphTest extends TitanGraphBaseTest {
             sign((TitanVertexProperty)p,txid);
         }
 
-        Edge e = getOnlyElement(v.query().direction(OUT).labels("es").edges());
+        Edge e = (Edge) getOnlyElement(v.query().direction(OUT).labels("es").edges());
         assertEquals(1,e.<Integer>value("sig").intValue());
         e.remove();
         sign(v.addEdge("es",u),txid);
-        e = getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
+        e = (Edge) getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
         assertEquals(1,e.<Integer>value("sig").intValue());
         sign((TitanEdge)e,txid);
-        e = getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
+        e = (Edge) getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
         assertEquals(1,e.<Integer>value("sig").intValue());
         e.remove();
         sign(v.addEdge("o2m",u),txid);
         for (String label : new String[]{"em","emf"}) {
-            e = getOnlyElement(v.query().direction(OUT).labels(label).edges());
+            e = (Edge) getOnlyElement(v.query().direction(OUT).labels(label).edges());
             assertEquals(1,e.<Integer>value("sig").intValue());
             sign((TitanEdge)e,txid);
         }

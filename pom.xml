@@ -152,9 +152,9 @@
                 <executions>
                     <execution>
                         <id>enforce-dependency-convergence</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
+<!--                         <goals> -->
+<!--                             <goal>enforce</goal> -->
+<!--                         </goals> -->
                         <configuration>
                             <rules>
                                 <DependencyConvergence />

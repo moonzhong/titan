@@ -122,8 +122,9 @@ public class IndexRepairJob extends IndexUpdateJob implements VertexScanJob {
                 EdgeSerializer edgeSerializer = writeTx.getEdgeSerializer();
                 List<Entry> additions = new ArrayList<>();
 
-                for (TitanRelation relation : vertex.query().types(indexRelationTypeName).direction(Direction.OUT).relations()) {
-                    InternalRelation titanRelation = (InternalRelation)relation;
+                for (Object item : vertex.query().types(indexRelationTypeName).direction(Direction.OUT).relations()) {
+                	TitanRelation relation = (TitanRelation) item;
+                	InternalRelation titanRelation = (InternalRelation)relation;
                     for (int pos = 0; pos < titanRelation.getArity(); pos++) {
                         if (!wrappedType.isUnidirected(Direction.BOTH) && !wrappedType.isUnidirected(EdgeDirection.fromPosition(pos)))
                             continue; //Directionality is not covered
@@ -152,8 +153,8 @@ public class IndexRepairJob extends IndexUpdateJob implements VertexScanJob {
                         break;
                     case EDGE:
                         elements = Lists.newArrayList();
-                        for (TitanEdge e : addIndexSchemaConstraint(vertex.query().direction(Direction.OUT),indexType).edges()) {
-                            elements.add(e);
+                        for (Object e : addIndexSchemaConstraint(vertex.query().direction(Direction.OUT),indexType).edges()) {
+                            elements.add((TitanEdge)e);
                         }
                         break;
                     default: throw new AssertionError("Unexpected category: " + indexType.getElement());
