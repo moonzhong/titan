@@ -1555,7 +1555,8 @@ public class GraphDatabaseConfiguration {
             defaultSchemaMaker = preregisteredAutoType.get(autoTypeMakerName);
         else defaultSchemaMaker = ConfigurationUtil.instantiate(autoTypeMakerName);
         //Disable auto-type making when batch-loading is enabled since that may overwrite types without warning
-        if (batchLoading) defaultSchemaMaker = DisableDefaultSchemaMaker.INSTANCE;
+        // modify by jeff.zhang 2017-3-26 自动创建属性与批量加载不绑定，由用户控制参数
+        // if (batchLoading) defaultSchemaMaker = DisableDefaultSchemaMaker.INSTANCE; 
 
         txVertexCacheSize = configuration.get(TX_CACHE_SIZE);
         //Check for explicit dirty vertex cache size first, then fall back on batch-loading-dependent default
