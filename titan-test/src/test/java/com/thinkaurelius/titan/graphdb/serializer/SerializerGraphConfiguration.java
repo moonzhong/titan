@@ -55,7 +55,7 @@ public class SerializerGraphConfiguration {
         tx.commit();
 
         tx = graph.newTransaction();
-        v = tx.query().has("time",5).vertices().iterator().next();
+        v = (TitanVertex) tx.query().has("time",5).vertices().iterator().next();
         assertEquals(5,(int)v.value("time"));
         assertEquals(3, Iterators.size(v.properties("any")));
         tx.rollback();

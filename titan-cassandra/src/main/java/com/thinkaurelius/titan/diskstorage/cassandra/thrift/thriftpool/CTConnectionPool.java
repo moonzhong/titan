@@ -48,7 +48,7 @@ public class CTConnectionPool extends GenericKeyedObjectPool<String, CTConnectio
      * @param keyspace The key of the pooled object being returned
      * @param conn The pooled object being returned, or null to do nothing
      */
-    public void returnObjectUnsafe(String keyspace, CTConnection conn) {
+    public void returnObjectUnsafe(String keyspace, CTConnection conn, boolean isDestory) {
         if (conn != null && conn.isOpen()) {
             try {
                 returnObject(keyspace, conn);
@@ -58,6 +58,10 @@ public class CTConnectionPool extends GenericKeyedObjectPool<String, CTConnectio
                         "Failure context: keyspace={}, pool={}, connection={}",
                         new Object[] { keyspace, this, conn });
             }
+        }
+        
+        if(isDestory){
+        	this.clear();
         }
     }
 }

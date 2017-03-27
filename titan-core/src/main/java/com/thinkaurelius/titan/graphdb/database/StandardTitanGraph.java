@@ -665,8 +665,10 @@ public class StandardTitanGraph extends TitanBlueprintsGraph {
             //    transactional isolation
             boolean hasSchemaElements = !Iterables.isEmpty(Iterables.filter(deletedRelations,SCHEMA_FILTER))
                     || !Iterables.isEmpty(Iterables.filter(addedRelations,SCHEMA_FILTER));
-            Preconditions.checkArgument(!hasSchemaElements || (!tx.getConfiguration().hasEnabledBatchLoading() && acquireLocks),
-                    "Attempting to create schema elements in inconsistent state");
+            // 2017-03-27 modify by jeff 由外部调用保持数据一致性
+            // Preconditions.checkArgument(!hasSchemaElements || (!tx.getConfiguration().hasEnabledBatchLoading() && acquireLocks),
+            //        "Attempting to create schema elements in inconsistent state");
+            // 
 
             if (hasSchemaElements && !hasTxIsolation) {
                 /*

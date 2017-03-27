@@ -266,7 +266,8 @@ public abstract class OLAPTest extends TitanGraphBaseTest {
             for (TitanVertex v : gview.query().vertices()) {
                 long degree2 = ((Integer)v.value(DegreeCounter.DEGREE)).longValue();
                 long actualDegree2 = 0;
-                for (TitanVertex w : v.query().direction(Direction.OUT).vertices()) {
+                for (Object item : v.query().direction(Direction.OUT).vertices()) {
+                	TitanVertex w = (TitanVertex) item;
                     actualDegree2 += Iterables.size(w.query().direction(Direction.OUT).vertices());
                 }
                 assertEquals(actualDegree2,degree2);

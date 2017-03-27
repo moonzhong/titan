@@ -29,6 +29,7 @@ import org.apache.cassandra.thrift.*;
 import org.apache.cassandra.utils.FBUtilities;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TException;
+import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,13 +202,17 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
     @SuppressWarnings("unchecked")
     public IPartitioner getCassandraPartitioner() throws BackendException {
         CTConnection conn = null;
+        boolean isDestroy = false;
         try {
             conn = pool.borrowObject(SYSTEM_KS);
             return FBUtilities.newPartitioner(conn.getClient().describe_partitioner());
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw new TemporaryBackendException(e);
         } finally {
-            pool.returnObjectUnsafe(SYSTEM_KS, conn);
+            pool.returnObjectUnsafe(SYSTEM_KS, conn, isDestroy);
         }
     }
 
@@ -292,6 +297,7 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         }
 
         CTConnection conn = null;
+        boolean isDestroy = false;
         try {
             conn = pool.borrowObject(keySpaceName);
             Cassandra.Client client = conn.getClient();
@@ -301,9 +307,12 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
                 client.batch_mutate(batch, consistency);
             }
         } catch (Exception ex) {
+        	if (ex instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw CassandraThriftKeyColumnValueStore.convertException(ex);
         } finally {
-            pool.returnObjectUnsafe(keySpaceName, conn);
+            pool.returnObjectUnsafe(keySpaceName, conn, isDestroy);
         }
 
         sleepAfterWrite(txh, commitTime);
@@ -330,6 +339,8 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
             throw new UnsupportedOperationException("getLocalKeyPartition() only supported by byte ordered partitioner.");
 
         Token.TokenFactory tokenFactory = partitioner.getTokenFactory();
+        
+        boolean isDestroy = false;
 
         try {
             // Resist the temptation to describe SYSTEM_KS.  It has no ring.
@@ -349,9 +360,12 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
 
             return keyRanges;
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw CassandraThriftKeyColumnValueStore.convertException(e);
         } finally {
-            pool.returnObjectUnsafe(keySpaceName, conn);
+            pool.returnObjectUnsafe(keySpaceName, conn, isDestroy);
         }
     }
 
@@ -380,6 +394,7 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
          */
 
         CTConnection conn = null;
+        boolean isDestroy = false;
         try {
             conn = pool.borrowObject(SYSTEM_KS);
             Cassandra.Client client = conn.getClient();
@@ -420,6 +435,9 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
              * remain valid.
              */
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+                isDestroy = true;        		
+            }
             throw new TemporaryBackendException(e);
         } finally {
             if (conn != null && conn.getClient() != null) {
@@ -429,14 +447,16 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
                     log.warn("Failed to reset keyspace", e);
                 } catch (TException e) {
                     log.warn("Failed to reset keyspace", e);
-                }
-            }
-            pool.returnObjectUnsafe(SYSTEM_KS, conn);
+                }             
+			}
+            pool.returnObjectUnsafe(SYSTEM_KS, conn, isDestroy);
         }
     }
 
     private KsDef ensureKeyspaceExists(String keyspaceName) throws TException, BackendException {
         CTConnection connection = null;
+        
+        boolean isDestroy = false;
 
         try {
             connection = pool.borrowObject(SYSTEM_KS);
@@ -470,9 +490,12 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
 
             return client.describe_keyspace(keyspaceName);
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw new TemporaryBackendException(e);
         } finally {
-            pool.returnObjectUnsafe(SYSTEM_KS, connection);
+            pool.returnObjectUnsafe(SYSTEM_KS, connection, isDestroy);
         }
     }
 
@@ -502,6 +525,7 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
 
     private void ensureColumnFamilyExists(String ksName, String cfName, String comparator) throws BackendException {
         CTConnection conn = null;
+        boolean isDestroy = false;
         try {
             KsDef keyspaceDef = ensureKeyspaceExists(ksName);
 
@@ -525,9 +549,12 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         } catch (SchemaDisagreementException e) {
             throw new TemporaryBackendException(e);
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw new PermanentBackendException(e);
         } finally {
-            pool.returnObjectUnsafe(ksName, conn);
+            pool.returnObjectUnsafe(ksName, conn, isDestroy);
         }
     }
 
@@ -573,6 +600,8 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
     public Map<String, String> getCompressionOptions(String cf) throws BackendException {
         CTConnection conn = null;
         Map<String, String> result = null;
+        
+        boolean isDestroy = false;
 
         try {
             conn = pool.borrowObject(keySpaceName);
@@ -592,9 +621,12 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
             log.debug("Keyspace {} does not exist", keySpaceName);
             return null;
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw new TemporaryBackendException(e);
         } finally {
-            pool.returnObjectUnsafe(keySpaceName, conn);
+            pool.returnObjectUnsafe(keySpaceName, conn, isDestroy);
         }
     }
 

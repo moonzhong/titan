@@ -17,6 +17,7 @@ import org.apache.cassandra.thrift.*;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
+import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,6 +124,7 @@ public class CassandraThriftKeyColumnValueStore implements KeyColumnValueStore {
         predicate.setSlice_range(range);
 
         CTConnection conn = null;
+        boolean isDestroy = false;
         try {
             conn = pool.borrowObject(keyspace);
             Cassandra.Client client = conn.getClient();
@@ -145,9 +147,12 @@ public class CassandraThriftKeyColumnValueStore implements KeyColumnValueStore {
 
             return results;
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw convertException(e);
         } finally {
-            pool.returnObjectUnsafe(keyspace, conn);
+            pool.returnObjectUnsafe(keyspace, conn, isDestroy);
         }
     }
 
@@ -323,6 +328,7 @@ public class CassandraThriftKeyColumnValueStore implements KeyColumnValueStore {
 
 
         CTConnection connection = null;
+        boolean isDestroy = false;
         try {
             connection = pool.borrowObject(keyspace);
 
@@ -345,10 +351,13 @@ public class CassandraThriftKeyColumnValueStore implements KeyColumnValueStore {
                     result.add(ks);
             return result;
         } catch (Exception e) {
+        	if (e instanceof TTransportException) {
+        		isDestroy = true;        		
+        	}
             throw convertException(e);
         } finally {
             if (connection != null)
-                pool.returnObjectUnsafe(keyspace, connection);
+                pool.returnObjectUnsafe(keyspace, connection, isDestroy);
         }
     }
 

@@ -360,7 +360,8 @@ public abstract class TitanPartitionGraphTest extends TitanGraphBaseTest {
             assertCount(groupDegrees[i],g.query().direction(Direction.OUT).edges());
             assertCount(groupDegrees[i],g.query().direction(Direction.IN).edges());
             assertCount(groupDegrees[i]*2,g.query().edges());
-            for (TitanVertex v : g.query().direction(Direction.IN).labels("member").vertices()) {
+            for (Object item : g.query().direction(Direction.IN).labels("member").vertices()) {
+            	TitanVertex v = (TitanVertex) item;
                 int pid = getPartitionID(v);
                 partitionIds.add(pid);
                 assertEquals(g, getOnlyElement(v.query().direction(Direction.OUT).labels("member").vertices()));
@@ -462,7 +463,8 @@ public abstract class TitanPartitionGraphTest extends TitanGraphBaseTest {
         for (int i=0;i<groupDegrees.length;i++) {
             TitanVertex g = getOnlyVertex(tx.query().has("groupid","group"+i));
             int partitionId = -1;
-            for (TitanVertex v : g.query().direction(Direction.IN).labels("member").vertices()) {
+            for (Object item : g.query().direction(Direction.IN).labels("member").vertices()) {
+            	TitanVertex v = (TitanVertex) item;
                 if (partitionId<0) partitionId = getPartitionID(v);
                 assertEquals(partitionId,getPartitionID(v));
                 partitionIds.add(partitionId);
